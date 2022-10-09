@@ -1,0 +1,18 @@
+﻿@inject ISnackbar Snackbar
+@page "/elasticSearch"
+
+<FileUpload/>
+
+<!--Search input-->
+<MudTextField @bind-Value="Search" Label="Search"  Variant="Variant.Outlined" Adornment="Adornment.End" AdornmentIcon="@Icons.Filled.Search" AdornmentColor="Color.Secondary" />
+
+<br /> <br />
+<TableView/>
+
+@code {
+    public string Search { get; set; }
+    public double? Amount { get; set; }
+    public int? Weight { get; set; }
+    private bool Clearing = false;
+   
+}
