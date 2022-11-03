@@ -1,11 +1,62 @@
-﻿@inject ISnackbar Snackbar
+﻿@inject HttpClient Http
 @page "/elasticSearch"
+@using CommonServiceLocator
+@using Newtonsoft.Json
+@using SolrNet
+@using uploadTest.Shared
 
 <FileUpload/>
 
 <!--Search input-->
-<MudTextField @bind-Value="Search" Label="Search"  Variant="Variant.Outlined" Adornment="Adornment.End" AdornmentIcon="@Icons.Filled.Search" AdornmentColor="Color.Secondary" />
+<MudTextField @bind-Value="Search" Label="Search" @onclick="Query" Variant="Variant.Outlined" Adornment="Adornment.End" AdornmentIcon="@Icons.Filled.Search" AdornmentColor="Color.Secondary" />
+@if(indexFields != null)
+{
+    foreach (var item in indexFields)
+    {
+        <br />@*
+            <b>aplha-2 = </b> foreach(var q in @item.Alpha_2) @q<br />
+            <b>aplha-3 = </b> @item.Alpha_3.Single()<br />
+            <b>CountryCode = </b> @item.CountryCode.Single()<br />
+            <b>Id = </b> @item.Id<br />
+            <b>IntermediateRegion = </b> @item.IntermediateRegion<br />
+            <b>IntermediateRegionCode = </b> @item.IntermediateRegionCode<br />
+            <b>Iso3116-2 = </b> @item.Iso3116_2.Single()<br />
+            <b>Name = </b> @item.Name.Single()<br />
+            <b>Region = </b> @item.Region.Single()<br />
+            <b>RegionCode = </b> @item.RegionCode.Single()<br />
+            <b>SubRegion = </b> @item.SubRegion.Single()<br />
+            <b>SubRegionCode = </b> @item.SubRegionCode.Single()<br />*@
 
+        <b>aplha-2 = </b>
+        foreach (var q in @item.Alpha_2)
+        {
+            @q
+        }
+        <br />
+        <b>aplha-3 = </b>
+        foreach (var q in @item.Alpha_3)
+        {
+            @q
+        }
+        <br />
+        <b>CountryCode = </b>
+        foreach (var q in @item.CountryCode)
+        {
+            @q
+        }
+        <br />
+        <b>Id = </b> @item.Id<br />
+        <b>IntermediateRegion = </b> @item.IntermediateRegion<br />
+        <b>IntermediateRegionCode = </b> @item.IntermediateRegionCode<br />
+        <b>Iso3116-2 = </b> foreach(var q in @item.Iso3116_2) @q<br />
+        <b>Name = </b> foreach(var q in @item.Name) @q<br />
+        <b>Region = </b> foreach(var q in @item.Region) @q<br />
+        <b>RegionCode = </b> foreach(var q in @item.RegionCode) @q <br />
+        <b>SubRegion = </b> foreach(var q in @item.SubRegion) @q <br />
+        <b>SubRegionCode = </b> foreach(var q in @item.SubRegionCode) @q <br />
+
+}
+}
 <br /> <br />
 <TableView/>
 
@@ -14,5 +65,15 @@
     public double? Amount { get; set; }
     public int? Weight { get; set; }
     private bool Clearing = false;
+    string test;
+    public List<IndexFields>? indexFields = null;
+    public async void Query()
+    {
+        var response = await Http.GetFromJsonAsync<List<IndexFields>>("api/File/query");
+        indexFields = response;
+    }
+
+    private ISolrOperations<IndexFields> solr;
+    
    
 }

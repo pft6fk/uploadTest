@@ -1,7 +1,12 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using CommonServiceLocator;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using NUnit.Framework;
+using SolrNet;
 using System.Net;
 using uploadTest.Shared;
+using System.Text.Json;
+
 
 namespace uploadTest.Server.Controllers
 {
@@ -10,9 +15,29 @@ namespace uploadTest.Server.Controllers
     public class FileController : ControllerBase
     {
         private readonly IWebHostEnvironment _env;
+        private readonly ISolrOperations<IndexFields> solr;
         public FileController(IWebHostEnvironment env)
         {
             _env = env;
+
+            Startup.Container.Clear();
+            Startup.InitContainer();
+            Startup.Init<IndexFields>("http://localhost:8983/solr/NewCore");
+            solr = ServiceLocator.Current.GetInstance<ISolrOperations<IndexFields>>();
+        }
+
+        //init the SolrNet library
+ 
+        [Test]
+        [HttpGet]
+        [Route("query")]
+        public async Task<SolrQueryResults<IndexFields>> Query()
+        {
+            var results = solr.Query(new SolrQuery("region:asia"));
+
+            var json = JsonSerializer.Serialize(results);
+
+            return results;
         }
 
         [HttpPost]
