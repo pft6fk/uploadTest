@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.ResponseCompression;
 using MudBlazor.Services;
+using SolrNet;
+using uploadTest.Shared;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,6 +10,15 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 builder.Services.AddMudServices();
+
+
+builder.Services.AddCors(o =>
+{
+    o.AddPolicy("AllowAll", builder =>
+        builder.AllowAnyOrigin()
+        .AllowAnyMethod()
+        .AllowAnyHeader());
+});
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

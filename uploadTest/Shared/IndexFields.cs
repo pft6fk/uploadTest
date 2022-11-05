@@ -25,7 +25,7 @@ namespace uploadTest.Shared
         public List<string> Alpha_3 { get; set; }
         
         [SolrField("country-code")]
-        public List<string> CountryCode { get; set; }
+        public List<int> CountryCode { get; set; }
         
         [SolrField("intermediate-region")]
         public List<string> IntermediateRegion { get; set; }
@@ -43,13 +43,13 @@ namespace uploadTest.Shared
         public List<string> Region { get; set; }
         
         [SolrField("region-code")]
-        public List<long> RegionCode { get; set; }
+        public List<int> RegionCode { get; set; }
         
         [SolrField("sub-region")]
         public List<string> SubRegion { get; set; }
         
         [SolrField("sub-region-code")]
-        public List<long> SubRegionCode { get; set; }
+        public List<int> SubRegionCode { get; set; }
 
 
     }
