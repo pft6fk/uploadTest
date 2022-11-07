@@ -16,7 +16,6 @@
                 OnAdornmentClick="Query"
                 AdornmentColor="Color.Secondary" />
 
-@f <br/>
 @if(indexFields != null)
 {
     foreach (var item in indexFields)
@@ -30,42 +29,29 @@
         <b>Iso3116-2 = </b> foreach(var q in @item.Iso3116_2) @q<br />
         <b>Name = </b> foreach(var q in @item.Name) @q<br />
         @*<b>Region = </b> foreach(var q in @item.Region) @q<br />*@
-        
-            <b>Region = </b> @item.Region.Single()<br />
+        <b>Region = </b> @item.Region.Single()<br />
         <b>RegionCode = </b> foreach(var q in @item.RegionCode) @q <br />
         <b>SubRegion = </b> foreach(var q in @item.SubRegion) @q <br />
         <b>SubRegionCode = </b> foreach(var q in @item.SubRegionCode) @q <br />
 
-}
+    }
 }
 <br /> <br />
 <TableView/>
 
 @code {
     public string Search { get; set; } = "";
+    private string q = "*:*";
     public double? Amount { get; set; }
     public int? Weight { get; set; }
     private bool Clearing = false;
-    private string f = "";
     public List<IndexFields>? indexFields = null;
     public async void Query()
     {
-        if (Search == "")
-            Search = "*:*";
-        var response = await Http.GetFromJsonAsync<List<IndexFields>>($"api/File/Query/{Search}");
+        if (Search != "")
+            q = Search;
+        var response = await Http.GetFromJsonAsync<List<IndexFields>>($"api/File/Query/{q}");
         indexFields = response;
     }
-
-    public async void HttpQuery()
-    {
-        if (Search == "")
-            Search = "*:*";
-        @*var response = await Http.GetFromJsonAsync<List<IndexFields>>($"http://localhost:8983/solr/NewCore/select/q={Search}");*@
-        var response = await Http.GetFromJsonAsync<List<IndexFields>>($"api/File/Query1/{Search}");
-        indexFields = response;
-        
-    }
-    private ISolrOperations<IndexFields> solr;
-    
-   
+       
 }

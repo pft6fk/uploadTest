@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.ResponseCompression;
 using MudBlazor.Services;
 using SolrNet;
 using uploadTest.Shared;
@@ -11,6 +10,8 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 builder.Services.AddMudServices();
 
+//init the solr
+builder.Services.AddSolrNet<IndexFields>("http://localhost:8983/solr/NewCore");
 
 builder.Services.AddCors(o =>
 {
