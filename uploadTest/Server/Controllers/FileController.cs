@@ -1,8 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using SolrNet;
+﻿using SolrNet;
 using System.Net;
 using uploadTest.Shared;
-
+using Microsoft.AspNetCore.Mvc;
 
 namespace uploadTest.Server.Controllers
 {
@@ -55,9 +54,14 @@ namespace uploadTest.Server.Controllers
                 //trustedFileNameForFileStorage = Path.GetRandomFileName();
 
                 var path = Path.Combine(_env.ContentRootPath, "uploads", trustedFileNameForFileStorage);
-
                 await using FileStream fs = new FileStream(path, FileMode.Create);
                 await file.CopyToAsync(fs);
+                
+                fs.Dispose();
+                
+                
+                var data = RetrieveDataFromFile(path);
+                //_solr.Add();
 
                 uploadResult.StoredFileName = trustedFileNameForFileStorage;
                 uploadResults.Add(uploadResult);
@@ -65,6 +69,33 @@ namespace uploadTest.Server.Controllers
             }
 
             return Ok(uploadResults);
+        }
+
+        /// <summary>
+        /// Retrieves all data from document using Apache Tika
+        /// </summary>
+        /// <param name="path">Path to the file</param>
+        /// <returns></returns>
+        public ExtractResponse? RetrieveDataFromFile(string path)
+        {
+            try
+            {
+                var f = new FileStream(path, FileMode.Open);
+
+                var response = _solr.Extract(new ExtractParameters(f, Guid.NewGuid().ToString())
+                {
+                    ExtractOnly = true,
+                    ExtractFormat = ExtractFormat.Text,
+                });
+
+                f.Dispose();
+                return response;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                return null;
+            }
         }
     }
 }

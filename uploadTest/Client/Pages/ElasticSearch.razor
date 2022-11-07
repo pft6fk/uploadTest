@@ -48,7 +48,7 @@
     public List<IndexFields>? indexFields = null;
     public async void Query()
     {
-        if (Search != "")
+        if (Search.Length > 0 )
             q = Search;
         var response = await Http.GetFromJsonAsync<List<IndexFields>>($"api/File/Query/{q}");
         indexFields = response;
