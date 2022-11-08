@@ -59,9 +59,23 @@ namespace uploadTest.Server.Controllers
                 
                 fs.Dispose();
                 
-                
-                var data = RetrieveDataFromFile(path);
-                //_solr.Add();
+                var docContent = RetrieveDataFromFile(path).Content;
+
+                var indexFields = new IndexFields();
+                indexFields.Id = Guid.NewGuid().ToString();
+                indexFields.DocName = new List<string> { trustedFileNameForFileStorage };
+                indexFields.DocContent = new List<string> { docContent };
+                //indexFields.Path = path;
+                _solr.Add(indexFields);
+
+
+                //_solr.Add(new IndexFields()
+                //{
+                //    Id = Guid.NewGuid().ToString(),
+                //    DocContent = new List<string> { docContent },
+                //    DocName = new List<string> { trustedFileNameForFileStorage },
+                //    Path = path
+                //});
 
                 uploadResult.StoredFileName = trustedFileNameForFileStorage;
                 uploadResults.Add(uploadResult);

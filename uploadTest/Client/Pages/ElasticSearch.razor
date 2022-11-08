@@ -21,18 +21,23 @@
     foreach (var item in indexFields)
     {
         <br />
-
+/*
         <b>aplha-2 = </b> foreach (var q in @item.Alpha_2){ @q }<br />
         <b>aplha-3 = </b> foreach (var q in @item.Alpha_3){ @q }<br />
         <b>CountryCode = </b> foreach (var q in @item.CountryCode){ @q }<br />
         <b>Id = </b> @item.Id<br />
         <b>Iso3116-2 = </b> foreach(var q in @item.Iso3116_2) @q<br />
         <b>Name = </b> foreach(var q in @item.Name) @q<br />
-        @*<b>Region = </b> foreach(var q in @item.Region) @q<br />*@
         <b>Region = </b> @item.Region.Single()<br />
         <b>RegionCode = </b> foreach(var q in @item.RegionCode) @q <br />
         <b>SubRegion = </b> foreach(var q in @item.SubRegion) @q <br />
         <b>SubRegionCode = </b> foreach(var q in @item.SubRegionCode) @q <br />
+                            */
+        <b>Id = </b> @item.Id<br />
+        <b>Path = </b> @item.Path <br/>
+        <b>File Name = </b> @item.DocName.Single() <br />
+        <b>File Content = </b> @item.DocContent.Single() <br/>
+        
 
     }
 }

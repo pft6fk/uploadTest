@@ -51,6 +51,13 @@ namespace uploadTest.Shared
         [SolrField("sub-region-code")]
         public List<int> SubRegionCode { get; set; }
 
+        [SolrField("docName")]
+        public List<string> DocName { get; set; }
 
+        [SolrField("docContent")]
+        public List<string> DocContent { get; set; }
+
+        [SolrField("path")]
+        public string Path { get; set; }
     }
 }
