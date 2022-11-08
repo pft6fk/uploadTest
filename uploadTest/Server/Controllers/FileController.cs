@@ -58,24 +58,8 @@ namespace uploadTest.Server.Controllers
                 await file.CopyToAsync(fs);
                 
                 fs.Dispose();
-                
-                var docContent = RetrieveDataFromFile(path).Content;
 
-                var indexFields = new IndexFields();
-                indexFields.Id = Guid.NewGuid().ToString();
-                indexFields.DocName = new List<string> { trustedFileNameForFileStorage };
-                indexFields.DocContent = new List<string> { docContent };
-                //indexFields.Path = path;
-                _solr.Add(indexFields);
-
-
-                //_solr.Add(new IndexFields()
-                //{
-                //    Id = Guid.NewGuid().ToString(),
-                //    DocContent = new List<string> { docContent },
-                //    DocName = new List<string> { trustedFileNameForFileStorage },
-                //    Path = path
-                //});
+                IndexFile(path, trustedFileNameForFileStorage);
 
                 uploadResult.StoredFileName = trustedFileNameForFileStorage;
                 uploadResults.Add(uploadResult);
@@ -110,6 +94,31 @@ namespace uploadTest.Server.Controllers
                 Console.WriteLine(ex);
                 return null;
             }
+        }
+
+        /// <summary>
+        /// Indexes provided file
+        /// </summary>
+        /// <param name="path">Path for file</param>
+        /// <param name="fileName">Name of file</param>
+        public void IndexFile(string path, string fileName)
+        {
+            var docContent = RetrieveDataFromFile(path).Content;
+
+            var indexFields = new IndexFields();
+            indexFields.Id = Guid.NewGuid().ToString();
+            indexFields.DocName = new List<string> { fileName };
+            indexFields.DocContent = new List<string> { docContent };
+            indexFields.Path = path;
+            _solr.Add(indexFields);
+            _solr.Commit();
+            //_solr.Add(new IndexFields()
+            //{
+            //    Id = Guid.NewGuid().ToString(),
+            //    DocContent = new List<string> { docContent },
+            //    DocName = new List<string> { trustedFileNameForFileStorage },
+            //    Path = path
+            //});
         }
     }
 }
