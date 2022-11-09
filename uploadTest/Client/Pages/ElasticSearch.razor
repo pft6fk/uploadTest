@@ -7,15 +7,22 @@
 
 <FileUpload/>
 
-<!--Search input-->
-<MudTextField @bind-Value="Search" 
+<!--Search input--> 
+
+<MudTextField @bind-Value="search.Text" 
                 Label="Search" 
                 Variant="Variant.Outlined" 
                 Adornment="Adornment.End" 
                 AdornmentIcon="@Icons.Filled.Search" 
                 OnAdornmentClick="Query"
-                AdornmentColor="Color.Secondary" />
-
+                AdornmentColor="Color.Secondary" /> 
+<!--
+<EditForm OnSubmit="Query" Model="search">
+    <input @bind-value="search.Text" placeholder="some text"/> 
+    <button type="submit">Submit</button>
+</EditForm> 
+-->
+@*
 @if(indexFields != null)
 {
     foreach (var item in indexFields)
@@ -40,11 +47,13 @@
         
 
     }
-}
+}*@
 <br /> <br />
-<TableView/>
+
+<TableView Files="indexFields"/>
 
 @code {
+    public Search1 search = new Search1();
     public string Search { get; set; } = "";
     private string q = "*:*";
     public double? Amount { get; set; }
@@ -53,10 +62,11 @@
     public List<IndexFields>? indexFields = null;
     public async void Query()
     {
-        if (Search.Length > 0 )
-            q = Search;
+
+            q = search.Text;
         var response = await Http.GetFromJsonAsync<List<IndexFields>>($"api/File/Query/{q}");
         indexFields = response;
+        StateHasChanged();
     }
        
 }

@@ -1,39 +1,32 @@
 @using uploadTest.Shared
 
-<MudTable Items="@Elements.Take(4)" Hover="true" Breakpoint="Breakpoint.Sm" Loading="@_loading" LoadingProgressColor="Color.Info">
+<MudTable Items="@Files" Hover="true" Breakpoint="Breakpoint.Sm" Loading="@_loading" LoadingProgressColor="Color.Info">
     <HeaderContent>
-        <MudTh>Nr</MudTh>
-        <MudTh>Sign</MudTh>
-        <MudTh>Name</MudTh>
-        <MudTh>Position</MudTh>
-        <MudTh>Molar mass</MudTh>
+        <MudTh>File Name</MudTh>
+        <MudTh>File location</MudTh>
+        <MudTh>ID</MudTh>
+        <MudTh>Actions</MudTh>
     </HeaderContent>
     <RowTemplate>
-        <MudTd DataLabel="Nr">@context.Number</MudTd>
-        <MudTd DataLabel="Sign">@context.Sign</MudTd>
-        <MudTd DataLabel="Name">@context.Name</MudTd>
-        <MudTd DataLabel="Position" HideSmall="_hidePosition">@context.Position</MudTd>
-        <MudTd DataLabel="Molar mass">@context.Molar</MudTd>
+        <MudTd DataLabel="Nr">@context.DocName.Single()</MudTd>
+        <MudTd DataLabel="Sign">@context.Path</MudTd>
+        <MudTd DataLabel="Name">@context.Id</MudTd>
+        <MudTd DataLabel="Position" >
+            <MudIconButton Icon="@Icons.Material.Filled.Download" ></MudIconButton><MudIconButton Icon="@Icons.Material.Filled.FileOpen"></MudIconButton><MudIconButton Icon="@Icons.Material.Filled.Delete"></MudIconButton>
+        </MudTd>
     </RowTemplate>
 </MudTable>
 <MudSwitch @bind-Checked="_loading">Show Loading</MudSwitch>
 
 @code {
+    [Parameter]
+    public List<IndexFields> Files { get; set; } = new();
     private bool _hidePosition;
     private bool _loading;
-    private IEnumerable<Element> Elements = new List<Element>();
 
     protected override async Task OnInitializedAsync()
     {
-        var temp = new Element
-            {
-                Number = 1,
-                Sign = "H",
-                Name = "Hydrogen",
-                Position = 0,
-                Molar = 1.00794
-            };
-        Elements = new List<Element> { temp, temp, temp };
+
     }
 
 }

@@ -60,4 +60,10 @@ namespace uploadTest.Shared
         [SolrField("path")]
         public string Path { get; set; }
     }
+
+    public class Search1
+    {
+        public string Text { get; set; }
+        public string MyProperty { get; set; }
+    }
 }
