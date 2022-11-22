@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.3.32901.215
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "uploadTest.Server", "uploadTest\Server\uploadTest.Server.csproj", "{AF10EDDA-8D1B-491D-BEE9-6AEE29324446}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "uploadTest.Server", "uploadTest\Server\uploadTest.Server.csproj", "{AF10EDDA-8D1B-491D-BEE9-6AEE29324446}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "uploadTest.Client", "uploadTest\Client\uploadTest.Client.csproj", "{1D6944F5-0677-45B3-8DD7-A25B3EDA012E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "uploadTest.Client", "uploadTest\Client\uploadTest.Client.csproj", "{1D6944F5-0677-45B3-8DD7-A25B3EDA012E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "uploadTest.Shared", "uploadTest\Shared\uploadTest.Shared.csproj", "{9BBAF204-698E-4860-803D-0AA579252D6F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "uploadTest.Shared", "uploadTest\Shared\uploadTest.Shared.csproj", "{9BBAF204-698E-4860-803D-0AA579252D6F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

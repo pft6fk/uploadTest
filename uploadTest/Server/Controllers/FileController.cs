@@ -122,5 +122,13 @@ namespace uploadTest.Server.Controllers
             _solr.Add(indexFields);
             _solr.Commit();
         }
+
+        [HttpPost]
+        [Route("Delete/{id}")]
+        public void Delete(string id)
+        {
+            _solr.Delete(id);
+            _solr.Commit();
+        } 
     }
 }
