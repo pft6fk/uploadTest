@@ -103,22 +103,24 @@ namespace uploadTest.Server.Controllers
         /// <param name="fileName">Name of file</param>
         public void IndexFile(string path, string fileName)
         {
-            var docContent = RetrieveDataFromFile(path).Content;
+            var doc = RetrieveDataFromFile(path);
 
+            var docContent = doc.Content;
+            List<Dictionary<string,string>> metaData = new List<Dictionary<string,string>>();
+            foreach (var item in doc.Metadata)
+            {
+                var tmp = new Dictionary<string, string>();
+                tmp.Add(item.FieldName, item.Value);
+                metaData.Add(tmp);
+            }
             var indexFields = new IndexFields();
-            indexFields.Id = Guid.NewGuid().ToString();
+            indexFields.  Id = Guid.NewGuid().ToString();
             indexFields.DocName = new List<string> { fileName };
             indexFields.DocContent = new List<string> { docContent };
+            indexFields.DocMetaData = metaData;
             indexFields.Path = path;
             _solr.Add(indexFields);
             _solr.Commit();
-            //_solr.Add(new IndexFields()
-            //{
-            //    Id = Guid.NewGuid().ToString(),
-            //    DocContent = new List<string> { docContent },
-            //    DocName = new List<string> { trustedFileNameForFileStorage },
-            //    Path = path
-            //});
         }
     }
 }

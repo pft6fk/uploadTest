@@ -1,22 +1,46 @@
 @using uploadTest.Shared
 
-<MudTable Items="@Files" Hover="true" Breakpoint="Breakpoint.Sm" Loading="@_loading" LoadingProgressColor="Color.Info">
+<MudTable Items="@Files" Hover="true" Breakpoint="Breakpoint.Sm" Bordered="true" HorizontalScrollbar="true">
+    <ColGroup>
+        <col style="width: 50px;"/>
+        <col style="width: 60%;"/>
+        <col style="width: 60px;"/>
+        <col style="width: 15%;"/>
+        @*<col style="width: 50px;"/>*@
+        <col style="width: 50px;"/>
+        <col style="width: 20%;"/>
+    </ColGroup>
     <HeaderContent>
-        <MudTh>File Name</MudTh>
-        <MudTh>File location</MudTh>
-        <MudTh>ID</MudTh>
+        <MudTh >ID</MudTh>
+        <MudTh>Name</MudTh>
+        <MudTh>Size(bytes)</MudTh>
+        <MudTh>Modified</MudTh>
+        @*<MudTh>Location</MudTh>*@
+        <MudTh>Author</MudTh>
         <MudTh>Actions</MudTh>
     </HeaderContent>
     <RowTemplate>
-        <MudTd DataLabel="Nr">@context.DocName.Single()</MudTd>
-        <MudTd DataLabel="Sign">@context.Path</MudTd>
-        <MudTd DataLabel="Name">@context.Id</MudTd>
-        <MudTd DataLabel="Position" >
-            <MudIconButton Icon="@Icons.Material.Filled.Download" ></MudIconButton><MudIconButton Icon="@Icons.Material.Filled.FileOpen"></MudIconButton><MudIconButton Icon="@Icons.Material.Filled.Delete"></MudIconButton>
+        <MudTd >@context.Id</MudTd>
+        <MudTd >@context.DocName.Single()</MudTd>
+        <MudTd >@context.DocSize.Single()</MudTd>
+        <MudTd >@context.DocModifiedDate.Single()</MudTd>
+        @*<MudTd >@context.Path</MudTd>*@
+        <MudTd >@if (@context.DocAuthor != null)
+            {
+                @context.DocAuthor.Single()
+            }
+            else
+            {
+                 
+            }
+            </MudTd>
+        <MudTd >
+            <MudIconButton Icon="@Icons.Material.Filled.Download"></MudIconButton>
+            <MudIconButton Icon="@Icons.Material.Filled.FileOpen"></MudIconButton>
+            <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="@Color.Warning"></MudIconButton>
         </MudTd>
     </RowTemplate>
 </MudTable>
-<MudSwitch @bind-Checked="_loading">Show Loading</MudSwitch>
 
 @code {
     [Parameter]

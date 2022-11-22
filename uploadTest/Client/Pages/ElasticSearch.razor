@@ -21,36 +21,67 @@
     <input @bind-value="search.Text" placeholder="some text"/> 
     <button type="submit">Submit</button>
 </EditForm> 
--->
-@*
+--><br />
+
+@*File Browser*@
+<TableView Files="indexFields"/>
+
 @if(indexFields != null)
 {
     foreach (var item in indexFields)
     {
         <br />
-/*
-        <b>aplha-2 = </b> foreach (var q in @item.Alpha_2){ @q }<br />
-        <b>aplha-3 = </b> foreach (var q in @item.Alpha_3){ @q }<br />
-        <b>CountryCode = </b> foreach (var q in @item.CountryCode){ @q }<br />
-        <b>Id = </b> @item.Id<br />
-        <b>Iso3116-2 = </b> foreach(var q in @item.Iso3116_2) @q<br />
-        <b>Name = </b> foreach(var q in @item.Name) @q<br />
-        <b>Region = </b> @item.Region.Single()<br />
-        <b>RegionCode = </b> foreach(var q in @item.RegionCode) @q <br />
-        <b>SubRegion = </b> foreach(var q in @item.SubRegion) @q <br />
-        <b>SubRegionCode = </b> foreach(var q in @item.SubRegionCode) @q <br />
-                            */
+
         <b>Id = </b> @item.Id<br />
         <b>Path = </b> @item.Path <br/>
         <b>File Name = </b> @item.DocName.Single() <br />
-        <b>File Content = </b> @item.DocContent.Single() <br/>
-        
+        if (item.DocCreationDate != null)
+        {
+            <b>File Created Date = </b> 
+            @item.DocCreationDate.Single() 
+            <br/>
+        }
+        if(item.DocModifiedDate != null)
+        {
+            <b>File Modified = </b>
+            @item.DocModifiedDate.Single()
+            <br />
+        }
+        if(item.DocAuthor != null)
+        {
+            <b>File Author = </b> 
+            @item.DocAuthor.Single() 
+            <br/>
+        }
+        if (item.DocDataType != null)
+        {
+            <b>File Data Type = </b> 
+            @item.DocDataType.Single() 
+            <br/>
+        }
+        if (item.DocPages != null)
+        {
+            <b>File Pages = </b> 
+            @item.DocPages.Single() 
+            <br/>
+        }
+        if (item.DocLanguage != null)
+        {
+            <b>File Language = </b> 
+            @item.DocLanguage.Single() 
+            <br/>
+        }
+        if (item.DocSize != null)
+        {
+            <b>File Size (bytes) = </b> 
+            @item.DocSize.Single() 
+            <br/>
+        }
+        @*<b>File Content = </b> @item.DocContent.Single() <br/>*@
+
 
     }
-}*@
-<br /> <br />
-
-<TableView Files="indexFields"/>
+}
 
 @code {
     public Search1 search = new Search1();
@@ -62,8 +93,7 @@
     public List<IndexFields>? indexFields = null;
     public async void Query()
     {
-
-            q = search.Text;
+        q = search.Text;
         var response = await Http.GetFromJsonAsync<List<IndexFields>>($"api/File/Query/{q}");
         indexFields = response;
         StateHasChanged();
