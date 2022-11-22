@@ -77,9 +77,9 @@ namespace uploadTest.Shared
         [SolrField("docMetaDataxmpTPg_NPages")]
         public List<long> DocPages { get; set; }
 
-
         [SolrField("path")]
         public string Path { get; set; }
+        
         [SolrField("docMetaData")]
         public List<Dictionary<string, string>> DocMetaData { get; set; }
     }
@@ -94,7 +94,7 @@ namespace uploadTest.Shared
 
     public class Search1
     {
-        public string Text { get; set; }
+        public string Text { get; set; } = "";
         public string MyProperty { get; set; }
     }
 }

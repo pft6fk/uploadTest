@@ -51,11 +51,20 @@
             
             
         </MudIcon>@context.Id</MudTd>
-            <MudTd >@context.DocName.Single()</MudTd>
+        <MudTd >@context.DocName.Single()</MudTd>
         <MudTd >@context.DocSize.Single()</MudTd>
-        <MudTd >@context.DocModifiedDate.Single()</MudTd>
+        <MudTd >
+            @if (@context.DocModifiedDate != null)
+            {
+                @context.DocModifiedDate.Single()
+            }
+            else
+            {
+                 
+            }</MudTd>
         @*<MudTd >@context.Path</MudTd>*@
-        <MudTd >@if (@context.DocAuthor != null)
+        <MudTd >
+            @if (@context.DocAuthor != null)
             {
                 @context.DocAuthor.Single()
             }

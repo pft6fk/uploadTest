@@ -86,14 +86,21 @@
 @code {
     public Search1 search = new Search1();
     public string Search { get; set; } = "";
-    private string q = "*:*";
+    private string q;
     public double? Amount { get; set; }
     public int? Weight { get; set; }
     private bool Clearing = false;
     public List<IndexFields>? indexFields = null;
     public async void Query()
     {
-        q = search.Text;
+        if(search.Text == String.Empty)
+        {
+            q = "*:*";
+        }
+        else
+        {
+            q =  search.Text;
+        }
         var response = await Http.GetFromJsonAsync<List<IndexFields>>($"api/File/Query/{q}");
         indexFields = response;
         StateHasChanged();
