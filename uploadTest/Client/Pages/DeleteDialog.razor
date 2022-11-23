@@ -30,7 +30,7 @@
     private async void DeleteServer()
     {
         await Http.GetAsync($"api/File/Delete/{index.Id}");
-        Snackbar.Add("Server Deleted", Severity.Success);
+        Snackbar.Add("File has been deleted", Severity.Success);
         MudDialog.Close(DialogResult.Ok(index.Id));
     }
 }

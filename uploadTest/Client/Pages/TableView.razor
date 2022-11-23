@@ -1,23 +1,26 @@
 @using uploadTest.Shared
 @inject HttpClient Http
 @inject IDialogService DialogService
-
+@if (Files != null)
+{
+    <b>Results found:</b> @numberFounds
+    <br />
+    <br />
+}
 <MudTable Items="@Files" Hover="true" Breakpoint="Breakpoint.Sm" Bordered="true" HorizontalScrollbar="true">
     <ColGroup>
         <col style="width: 50px;"/>
         <col style="width: 60%;"/>
-        <col style="width: 60px;"/>
         <col style="width: 15%;"/>
-        @*<col style="width: 50px;"/>*@
+        <col style="width: 15%;"/>
         <col style="width: 50px;"/>
         <col style="width: 20%;"/>
     </ColGroup>
     <HeaderContent>
         <MudTh >ID</MudTh>
         <MudTh>Name</MudTh>
-        <MudTh>Size(bytes)</MudTh>
+        <MudTh>Size</MudTh>
         <MudTh>Modified</MudTh>
-        @*<MudTh>Location</MudTh>*@
         <MudTh>Author</MudTh>
         <MudTh>Actions</MudTh>
     </HeaderContent>
@@ -51,8 +54,26 @@
             
             
         </MudIcon>@context.Id</MudTd>
-        <MudTd >@context.DocName.Single()</MudTd>
-        <MudTd >@context.DocSize.Single()</MudTd>
+        <MudTd >
+            <b>File path:</b> @context.Path
+            <br/>
+            <b>File name:</b> @context.DocName.Single()
+            </MudTd>
+        <MudTd>
+            @if(context.DocSize.Single()/1024 < 1024)
+            {
+                <div>@(context.DocSize.Single() / 1024) KB</div>
+            }
+            @if (context.DocSize.Single() / 1024 < 1)
+            {
+                <div>@context.DocSize.Single() B</div>
+            }
+            @if(context.DocSize.Single() / 1024 >= 1024)
+            {
+                <div>@(context.DocSize.Single()/1024/1024) MB</div>
+            }
+
+        </MudTd>
         <MudTd >
             @if (@context.DocModifiedDate != null)
             {
@@ -62,7 +83,6 @@
             {
                  
             }</MudTd>
-        @*<MudTd >@context.Path</MudTd>*@
         <MudTd >
             @if (@context.DocAuthor != null)
             {
@@ -75,7 +95,6 @@
             </MudTd>
         <MudTd >
             <MudIconButton Icon="@Icons.Material.Filled.Download"></MudIconButton>
-            <MudIconButton Icon="@Icons.Material.Filled.FileOpen"></MudIconButton>
             <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error" OnClick="@(() => DeleteFile(context))"></MudIconButton>
         </MudTd>
     </RowTemplate>
@@ -83,7 +102,9 @@
 
 @code {
     [Parameter]
-    public List<IndexFields> Files { get; set; } = new();
+    public List<IndexFields> Files { get; set; } 
+    [Parameter]
+    public int numberFounds { get; set; } 
     string logo = "";
     string wordSVG = "<svg style=\"width:24px;height:24px\" viewBox=\"0 0 24 24\">" 
         +"<path fill=\"currentColor\" d=\"M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M15.2,20H13.8L12,13.2L10.2,20H8.8L6.6,11H8.1L9.5,17.8L11.3,11H12.6L14.4,17.8L15.8,11H17.3L15.2,20M13,9V3.5L18.5,9H13Z\" /> " 

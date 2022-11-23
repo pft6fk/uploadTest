@@ -24,7 +24,7 @@
 --><br />
 
 @*File Browser*@
-<TableView Files="indexFields"/>
+<TableView Files="indexFields" numberFounds="numberFounds"/>
 
 @if(indexFields != null)
 {
@@ -87,6 +87,7 @@
     public Search1 search = new Search1();
     public string Search { get; set; } = "";
     private string q;
+    public int numberFounds;
     public double? Amount { get; set; }
     public int? Weight { get; set; }
     private bool Clearing = false;
@@ -103,6 +104,7 @@
         }
         var response = await Http.GetFromJsonAsync<List<IndexFields>>($"api/File/Query/{q}");
         indexFields = response;
+        numberFounds = indexFields.Count;
         StateHasChanged();
     }
        

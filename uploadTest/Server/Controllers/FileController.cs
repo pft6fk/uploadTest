@@ -123,7 +123,7 @@ namespace uploadTest.Server.Controllers
             _solr.Commit();
         }
 
-        [HttpPost]
+        [HttpGet]
         [Route("Delete/{id}")]
         public void Delete(string id)
         {
