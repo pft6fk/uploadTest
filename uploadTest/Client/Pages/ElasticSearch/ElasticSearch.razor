@@ -3,6 +3,7 @@
 @using CommonServiceLocator
 @using Newtonsoft.Json
 @using SolrNet
+@using uploadTest.Client.Pages.ElasticSearch.ChildComponents
 @using uploadTest.Shared
 
 <FileUpload/>
@@ -15,6 +16,7 @@
                 Adornment="Adornment.End" 
                 AdornmentIcon="@Icons.Filled.Search" 
                 OnAdornmentClick="Query"
+                OnKeyPress="Enter"
                 AdornmentColor="Color.Secondary" /> 
 <!--
 <EditForm OnSubmit="Query" Model="search">
@@ -107,5 +109,25 @@
         numberFounds = indexFields.Count;
         StateHasChanged();
     }
+
+    public async void Enter(KeyboardEventArgs e)
+    {
+        if (e.Code == "Enter" || e.Code == "NumpadEnter")
+        {
+            if(search.Text == String.Empty)
+            {
+                q = "*:*";
+            }
+            else
+            {
+                q =  search.Text;
+            }
+            var response = await Http.GetFromJsonAsync<List<IndexFields>>($"api/File/Query/{q}");
+            indexFields = response;
+            numberFounds = indexFields.Count;
+            StateHasChanged();
+        }
+    }
+
        
 }

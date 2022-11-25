@@ -1,0 +1,31 @@
+﻿@page "/settings"
+
+<MudTabs Elevation="2" Rounded="true" ApplyEffectsToContainer="true" PanelClass="pa-6">
+    <MudTabPanel Text="Synonyms">
+        <MudText>
+            <MudText Typo="Typo.h6">
+                Please, enter sysnonyms comma seperated
+            </MudText>
+            <br/>
+            <MudTextField @bind-Value="synonyms" 
+                            Variant="Variant.Outlined" 
+                            Label="Synonyms" />
+
+            <br />
+            <div style="display: flex; justify-content:flex-end; width: 100%;">
+                <MudButton StartIcon="@Icons.Filled.Save" Variant="Variant.Filled" Color="Color.Primary" Style="width: 120px; height:48px; padding: 16px; ">Save</MudButton>
+                <MudButton StartIcon="@Icons.Filled.Cancel" Variant="Variant.Outlined" Color="Color.Secondary" Style="width: 120px; height:48px; padding: 16px; margin-left: 16px;">Cancel</MudButton>
+            </div>
+        </MudText>
+    </MudTabPanel>
+    <MudTabPanel Text="Stop words">
+        <MudText>Content Two</MudText>
+    </MudTabPanel>
+    <MudTabPanel Text="Prot words">
+        <MudText>Content Three</MudText>
+    </MudTabPanel>
+</MudTabs>
+
+@code {
+    public string synonyms { get; set; }
+}
