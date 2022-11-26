@@ -27,10 +27,10 @@
         MudDialog.Cancel();
     }
 
-    private async void DeleteServer()
+    private void DeleteServer()
     {
-        await Http.GetAsync($"api/File/Delete/{index.Id}");
-        Snackbar.Add("File has been deleted", Severity.Success);
-        MudDialog.Close(DialogResult.Ok(index.Id));
+        Http.GetAsync($"api/File/Delete/{index.Id}");
+        Snackbar.Add("Document has been deletedv successfully", Severity.Success);
+        MudDialog.Close();
     }
 }

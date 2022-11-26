@@ -117,7 +117,7 @@ namespace uploadTest.Server.Controllers
                 metaData.Add(tmp);
             }
             var indexFields = new IndexFields();
-            indexFields.  Id = Guid.NewGuid().ToString();
+            indexFields.Id = Guid.NewGuid().ToString();
             indexFields.DocName = new List<string> { fileName };
             indexFields.DocContent = new List<string> { docContent };
             indexFields.DocMetaData = metaData;
