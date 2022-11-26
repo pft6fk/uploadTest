@@ -188,5 +188,24 @@ namespace uploadTest.Server.Controllers
                 Console.WriteLine(ex.Message);
             }
         }
+
+        [HttpGet]
+        [Route("Download/{id}")]
+        public async Task<IActionResult> DownloadFile(string id)
+        {
+            var solrDoc = _solr.Query(new SolrQuery(id));
+            var path = solrDoc.Single().Path;
+            var docName = solrDoc.Single().DocName.Single();
+            var docType = solrDoc.Single().DocDataType.Single();
+            var memory = new MemoryStream();
+
+            using (var stream = new FileStream(path, FileMode.Open))
+            {
+                await stream.CopyToAsync(memory);
+            }
+            memory.Position = 0;
+
+            return File(memory, docType, path);
+        }
     }
 }
