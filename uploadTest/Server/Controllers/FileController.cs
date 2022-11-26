@@ -9,6 +9,9 @@ namespace uploadTest.Server.Controllers
     [ApiController]
     public class FileController : ControllerBase
     {
+        private readonly string _solrInstanceDir = "D:\\dev\\solr\\solr\\server\\solr\\";
+        private readonly string _solrCore = "NewCore";
+        private readonly string _solrUri = "http://localhost:8983/solr";
         private readonly IWebHostEnvironment _env;
         private readonly ISolrOperations<IndexFields> _solr;
         public FileController(IWebHostEnvironment env, ISolrOperations<IndexFields> solr)
@@ -129,6 +132,61 @@ namespace uploadTest.Server.Controllers
         {
             _solr.Delete(id);
             _solr.Commit();
-        } 
+        }
+
+        [HttpGet]
+        [Route("AddSynonynms/{synonyms}")]
+        public async Task AddSynonynms(string synonyms)
+        {
+            try
+            {
+                System.IO.File.AppendAllText( _solrInstanceDir + _solrCore + "\\conf\\synonyms.txt", synonyms + Environment.NewLine);
+                //after adding updating synonyms, it is required to reload core
+                using (var client = new HttpClient())
+                {
+                    client.GetAsync($"{_solrUri}/admin/cores?action=RELOAD&core={_solrCore}");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+        }
+        [HttpGet]
+        [Route("AddProtwords/{protwords}")]
+        public async Task AddProtwords(string protwords)
+        {
+            try
+            {
+                System.IO.File.AppendAllText( _solrInstanceDir + _solrCore + "\\conf\\protwords.txt", protwords + Environment.NewLine);
+                //after adding updating synonyms, it is required to reload core
+                using (var client = new HttpClient())
+                {
+                    client.GetAsync($"{_solrUri}/admin/cores?action=RELOAD&core={_solrCore}");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+        }
+        [HttpGet]
+        [Route("AddStopwords/{stopwords}")]
+        public async Task AddStopwords(string stopwords)
+        {
+            try
+            {
+                System.IO.File.AppendAllText( _solrInstanceDir + _solrCore + "\\conf\\stopwords.txt", stopwords + Environment.NewLine);
+                //after adding updating synonyms, it is required to reload core
+                using (var client = new HttpClient())
+                {
+                    client.GetAsync($"{_solrUri}/admin/cores?action=RELOAD&core={_solrCore}");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+        }
     }
 }
