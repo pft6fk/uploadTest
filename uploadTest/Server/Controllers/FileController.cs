@@ -2,6 +2,9 @@
 using System.Net;
 using uploadTest.Shared;
 using Microsoft.AspNetCore.Mvc;
+using SolrNet.Commands.Parameters;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace uploadTest.Server.Controllers
 {
@@ -30,7 +33,7 @@ namespace uploadTest.Server.Controllers
         public async Task<SolrQueryResults<IndexFields>> Query(string q)
         {
             var results = _solr.Query(new SolrQuery(q));
-
+            Suggest(q);
             return results;
         }
         
@@ -130,6 +133,17 @@ namespace uploadTest.Server.Controllers
         [Route("Delete/{id}")]
         public void Delete(string id)
         {
+            var doc = _solr.Query(new SolrQuery(id));
+            var path = doc.Single().Path;
+            try
+            {
+                System.IO.File.Delete(path);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                throw;
+            }
             _solr.Delete(id);
             _solr.Commit();
         }
@@ -206,6 +220,36 @@ namespace uploadTest.Server.Controllers
             memory.Position = 0;
 
             return File(memory, docType, path);
+        }
+
+        [HttpGet]
+        [Route("Suggest/{input}")]
+        public async Task<List<string>> Suggest(string term)
+        {
+            Suggest terms;
+
+            var termsList = new List<string>();
+
+            using (var client = new HttpClient())
+            {
+                 
+                var response = JObject.Parse(
+                    await client.GetStringAsync(
+                        _solrUri + $"/NewCore/suggest?suggest=true&suggest.dictionary=mySuggester&suggest.q={term}"
+                        ));
+
+                var suggestions = response["suggest"];
+                var AnalyzingInfixLookupFactory = suggestions["mySuggester"];
+                var AnalyzingInfixLookupFactoryTerm = AnalyzingInfixLookupFactory[term];
+                terms = JsonConvert.DeserializeObject<Suggest>(AnalyzingInfixLookupFactoryTerm.ToString());
+
+                Console.WriteLine(terms);
+                foreach (var item in terms.suggestions)
+                {
+                    termsList.Add(item.term);
+                }
+            }
+            return termsList;
         }
     }
 }
