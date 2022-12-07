@@ -33,7 +33,6 @@ namespace uploadTest.Server.Controllers
         public async Task<SolrQueryResults<IndexFields>> Query(string q)
         {
             var results = _solr.Query(new SolrQuery(q));
-            Suggest(q);
             return results;
         }
         
@@ -243,10 +242,19 @@ namespace uploadTest.Server.Controllers
                 var AnalyzingInfixLookupFactoryTerm = AnalyzingInfixLookupFactory[term];
                 terms = JsonConvert.DeserializeObject<Suggest>(AnalyzingInfixLookupFactoryTerm.ToString());
 
-                Console.WriteLine(terms);
+                //for extracting unique words from collection
                 foreach (var item in terms.suggestions)
                 {
-                    termsList.Add(item.term);
+                    var tmp = item.term.Split(" ");
+                    
+                    var suggest = from word in tmp
+                            where word.StartsWith("<") select word;
+                    
+                    if (termsList.Contains(suggest.FirstOrDefault()))
+                        continue;
+                    
+                    if(suggest.FirstOrDefault() != null)
+                        termsList.Add(suggest.FirstOrDefault());
                 }
             }
             return termsList;
