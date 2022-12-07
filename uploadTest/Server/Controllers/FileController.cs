@@ -247,14 +247,14 @@ namespace uploadTest.Server.Controllers
                 {
                     var tmp = item.term.Split(" ");
                     
-                    var suggest = from word in tmp
-                            where word.StartsWith("<") select word;
+                    var suggest = (from word in tmp
+                            where word.StartsWith("<") select word).ToList<string>();
                     
                     if (termsList.Contains(suggest.FirstOrDefault()))
                         continue;
                     
                     if(suggest.FirstOrDefault() != null)
-                        termsList.Add(suggest.FirstOrDefault());
+                        termsList.AddRange(suggest);
                 }
             }
             return termsList;
