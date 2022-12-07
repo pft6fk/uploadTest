@@ -4,6 +4,7 @@ bin/solr start -p 8983
 //to add core
 bin/solr create -c CORE_NAME
 
+_____________________________________________________________________________________________________________________
 
 //things to add to solrschemas:
 
@@ -30,6 +31,31 @@ bin/solr create -c CORE_NAME
     </lst>
   </requestHandler>
 
+//this is for suggest
+//adding search component and request handler
+    <searchComponent name="suggest" class="solr.SuggestComponent">
+      <lst name="suggester">
+        <str name="name">mySuggester</str>
+        <str name="lookupImpl">AnalyzingInfixLookupFactory</str>
+        <str name="dictionaryImpl">DocumentDictionaryFactory</str>
+        <str name="field">suggester</str>
+        <str name="suggestAnalyzerFieldType">text_general</str>
+        <str name="buildOnStartup">false</str>
+      </lst>
+    </searchComponent>
+
+  <requestHandler name="/suggest" class="solr.SearchHandler"
+                  startup="lazy" >
+    <lst name="defaults">
+      <str name="suggest">true</str>
+      <str name="suggest.count">10</str>
+    </lst>
+    <arr name="components">
+      <str>suggest</str>
+    </arr>
+  </requestHandler>
+
+
 //in "/select" requestHandler 
 //this is for global search
 
@@ -48,9 +74,13 @@ things to add to managed-schema:
 //in our case it is for text_general field in index and query analyzer
       <filter name="snowballPorter"/>
 
+//adding suggester field that will store all values 
+  <field name="suggester" type="text_general" multiValued="true"/>
+
 //in the end add copyField for global search
 
   <copyField source="*" dest="_text_"/>  
+  <copyField source="*" dest="suggester"/>  
 
 
 //after all modification, remember to restart the solr
