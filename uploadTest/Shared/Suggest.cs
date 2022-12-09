@@ -17,7 +17,7 @@ namespace uploadTest.Shared
     public class Suggestion
     {
         public string term { get; set; }
-        public int weight { get; set; }
+        public long weight { get; set; }
         public string payload { get; set; }
     }
 

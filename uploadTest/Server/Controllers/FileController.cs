@@ -33,6 +33,10 @@ namespace uploadTest.Server.Controllers
         public async Task<SolrQueryResults<IndexFields>> Query(string q)
         {
             var results = _solr.Query(new SolrQuery(q));
+
+            var s = await Suggest(q);
+            Console.WriteLine(s);
+
             return results;
         }
         
@@ -222,7 +226,7 @@ namespace uploadTest.Server.Controllers
         }
 
         [HttpGet]
-        [Route("Suggest/{input}")]
+        [Route("Suggest/{term}")]
         public async Task<List<string>> Suggest(string term)
         {
             Suggest terms;
@@ -234,30 +238,61 @@ namespace uploadTest.Server.Controllers
                  
                 var response = JObject.Parse(
                     await client.GetStringAsync(
-                        _solrUri + $"/NewCore/suggest?suggest=true&suggest.dictionary=mySuggester&suggest.q={term}"
+                        _solrUri + $"/NewCore/suggest?suggest=true&suggest.dictionary=FreeTextSuggester&suggest.q={term}"
                         ));
 
                 var suggestions = response["suggest"];
-                var AnalyzingInfixLookupFactory = suggestions["mySuggester"];
-                var AnalyzingInfixLookupFactoryTerm = AnalyzingInfixLookupFactory[term];
-                terms = JsonConvert.DeserializeObject<Suggest>(AnalyzingInfixLookupFactoryTerm.ToString());
+                var LookupImpl = suggestions["FreeTextSuggester"];
+                var LookupImplTerm = LookupImpl[term];
+                terms = JsonConvert.DeserializeObject<Suggest>(LookupImplTerm.ToString());
 
                 //for extracting unique words from collection
                 foreach (var item in terms.suggestions)
                 {
-                    var tmp = item.term.Split(" ");
                     
-                    var suggest = (from word in tmp
-                            where word.StartsWith("<") select word).ToList<string>();
-                    
-                    if (termsList.Contains(suggest.FirstOrDefault()))
-                        continue;
-                    
-                    if(suggest.FirstOrDefault() != null)
-                        termsList.AddRange(suggest);
+                    termsList.Add(item.term);
                 }
             }
             return termsList;
         }
+
+        //[HttpGet]
+        //[Route("Suggest/{term}")]
+        //public async Task<List<string>> Suggest(string term)
+        //{
+        //    Suggest terms;
+
+        //    var termsList = new List<string>();
+
+        //    using (var client = new HttpClient())
+        //    {
+                 
+        //        var response = JObject.Parse(
+        //            await client.GetStringAsync(
+        //                _solrUri + $"/NewCore/suggest?suggest=true&suggest.dictionary=mySuggester&suggest.q={term}"
+        //                ));
+
+        //        var suggestions = response["suggest"];
+        //        var AnalyzingInfixLookupFactory = suggestions["mySuggester"];
+        //        var AnalyzingInfixLookupFactoryTerm = AnalyzingInfixLookupFactory[term];
+        //        terms = JsonConvert.DeserializeObject<Suggest>(AnalyzingInfixLookupFactoryTerm.ToString());
+
+        //        //for extracting unique words from collection
+        //        foreach (var item in terms.suggestions)
+        //        {
+        //            var tmp = item.term.Split(" ");
+                    
+        //            var suggest = (from word in tmp
+        //                    where word.StartsWith("<") select word).ToList<string>();
+                    
+        //            if (termsList.Contains(suggest.FirstOrDefault()))
+        //                continue;
+                    
+        //            if(suggest.FirstOrDefault() != null)
+        //                termsList.AddRange(suggest);
+        //        }
+        //    }
+        //    return termsList;
+        //}
     }
 }

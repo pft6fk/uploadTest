@@ -9,89 +9,25 @@
 <FileUpload />
 
 <!--Search input-->
-
-<MudTextField @bind-Value="search.Text"
-              Label="Search"
-              Variant="Variant.Outlined"
-              Adornment="Adornment.End"
-              AdornmentIcon="@Icons.Filled.Search"
-              OnAdornmentClick="Query"
-              OnKeyPress="Enter"
-              AdornmentColor="Color.Secondary" />
-<!--
-<EditForm OnSubmit="Query" Model="search">
-    <input @bind-value="search.Text" placeholder="some text"/>
-    <button type="submit">Submit</button>
-</EditForm>
--->
+<MudAutocomplete T="string" Label="Search" @bind-Value="value" SearchFunc="@Search"
+                         ResetValueOnEmptyText="@resetValueOnEmptyText"
+                         CoerceText="@coerceText" CoerceValue="@coerceValue"
+                         Variant="Variant.Outlined"
+                         OnAdornmentClick="Query"
+                         OnKeyPress="Enter"
+                         AdornmentIcon="@Icons.Material.Filled.Search" AdornmentColor="Color.Secondary" />
 <br />
 
 @*File Browser*@
 <TableView Files="indexFields" numberFounds="numberFounds" />
 
-@if (indexFields != null)
-{
-    foreach (var item in indexFields)
-    {
-        <br />
-
-        <b>Id = </b> @item.Id
-        <br />
-        <b>Path = </b> @item.Path
-        <br />
-        <b>File Name = </b> @item.DocName.Single()
-        <br />
-        if (item.DocCreationDate != null)
-        {
-            <b>File Created Date = </b>
-            @item.DocCreationDate.Single()
-            <br />
-        }
-        if (item.DocModifiedDate != null)
-        {
-            <b>File Modified = </b>
-            @item.DocModifiedDate.Single()
-            <br />
-        }
-        if (item.DocAuthor != null)
-        {
-            <b>File Author = </b>
-            @item.DocAuthor.Single()
-            <br />
-        }
-        if (item.DocDataType != null)
-        {
-            <b>File Data Type = </b>
-            @item.DocDataType.Single()
-            <br />
-        }
-        if (item.DocPages != null)
-        {
-            <b>File Pages = </b>
-            @item.DocPages.Single()
-            <br />
-        }
-        if (item.DocLanguage != null)
-        {
-            <b>File Language = </b>
-            @item.DocLanguage.Single()
-            <br />
-        }
-        if (item.DocSize != null)
-        {
-            <b>File Size (bytes) = </b>
-            @item.DocSize.Single()
-            <br />
-        }
-        @*<b>File Content = </b> @item.DocContent.Single() <br/>*@
-
-
-    }
-}
-
 @code {
-    public Search1 search = new Search1();
-    public string Search { get; set; } = "";
+
+    private bool resetValueOnEmptyText;
+    private bool coerceText;
+    private bool coerceValue;
+    private string value;
+
     private string q;
     public int numberFounds;
     public double? Amount { get; set; }
@@ -100,13 +36,13 @@
     public List<IndexFields>? indexFields = null;
     public async void Query()
     {
-        if (search.Text == String.Empty)
+        if (value == String.Empty)
         {
             q = "*:*";
         }
         else
         {
-            q = search.Text;
+            q = value;
         }
         var response = await Http.GetFromJsonAsync<List<IndexFields>>($"api/File/Query/{q}");
         indexFields = response;
@@ -118,13 +54,13 @@
     {
         if (e.Code == "Enter" || e.Code == "NumpadEnter")
         {
-            if (search.Text == String.Empty)
+            if (value == String.Empty)
             {
                 q = "*:*";
             }
             else
             {
-                q = search.Text;
+                q = value;
             }
             var response = await Http.GetFromJsonAsync<List<IndexFields>>($"api/File/Query/{q}");
             indexFields = response;
@@ -133,5 +69,13 @@
         }
     }
 
-
+    private async Task<IEnumerable<string>> Search(string value)
+    {
+        // In real life use an asynchronous function for fetching data from an api.
+        var response = await Http.GetFromJsonAsync<List<string>>($"/api/File/Suggest/{value}");
+        
+        if (string.IsNullOrEmpty(value))
+            return new string[0];
+        return response;
+    }
 }

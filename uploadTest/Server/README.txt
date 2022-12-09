@@ -42,6 +42,16 @@ ________________________________________________________________________________
         <str name="suggestAnalyzerFieldType">text_general</str>
         <str name="buildOnStartup">false</str>
       </lst>
+      <lst name="suggester">
+        <str name="name">FreeTextSuggester</str>
+        <str name="lookupImpl">FreeTextLookupFactory</str>
+        <str name="dictionaryImpl">DocumentDictionaryFactory</str>
+        <str name="field">suggester</str>
+        <str name="weightField">docContent</str>
+        <str name="separator"> </str>
+        <str name="ngrams">3</str>
+        <str name="suggestFreeTextAnalyzerFieldType">text_general</str>
+      </lst>
     </searchComponent>
 
   <requestHandler name="/suggest" class="solr.SearchHandler"
