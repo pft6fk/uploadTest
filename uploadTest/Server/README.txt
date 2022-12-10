@@ -4,12 +4,18 @@ bin/solr start -p 8983
 //to add core
 bin/solr create -c CORE_NAME
 
+//to restart core after modification of schema
+bin/solr restart -p 8983
+
+//to delete core 
+bin/solr delete -c CORE_NAME
 _____________________________________________________________________________________________________________________
 
+//all schema files are located in solr\server\solr\%CORE_NAME%\conf
 //things to add to solrschemas:
 
 //in solrconfig.conf :
-//this is for apache TIKA 
+//this libraries are for apache TIKA and they need to be added after luceneMatchVersion
 
   <lib dir="${solr.install.dir:../../../..}/modules/extraction/lib" regex=".*\.jar" />
   <lib dir="${solr.install.dir:../../../..}/modules/clustering/lib/" regex=".*\.jar" />

@@ -33,10 +33,6 @@ namespace uploadTest.Server.Controllers
         public async Task<SolrQueryResults<IndexFields>> Query(string q)
         {
             var results = _solr.Query(new SolrQuery(q));
-
-            var s = await Suggest(q);
-            Console.WriteLine(s);
-
             return results;
         }
         
@@ -238,7 +234,7 @@ namespace uploadTest.Server.Controllers
                  
                 var response = JObject.Parse(
                     await client.GetStringAsync(
-                        _solrUri + $"/NewCore/suggest?suggest=true&suggest.dictionary=FreeTextSuggester&suggest.q={term}"
+                        _solrUri + $"/{_solrCore}/suggest?suggest=true&suggest.dictionary=FreeTextSuggester&suggest.q={term}"
                         ));
 
                 var suggestions = response["suggest"];
@@ -269,7 +265,7 @@ namespace uploadTest.Server.Controllers
                  
         //        var response = JObject.Parse(
         //            await client.GetStringAsync(
-        //                _solrUri + $"/NewCore/suggest?suggest=true&suggest.dictionary=mySuggester&suggest.q={term}"
+        //                _solrUri + $"/{_solrCore}/suggest?suggest=true&suggest.dictionary=mySuggester&suggest.q={term}"
         //                ));
 
         //        var suggestions = response["suggest"];
