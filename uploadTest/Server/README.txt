@@ -15,7 +15,7 @@ ________________________________________________________________________________
 //things to add to solrschemas:
 
 //in solrconfig.conf :
-//this libraries are for apache TIKA and they need to be added after luceneMatchVersion
+//this libraries are for apache TIKA and they need to be added after <luceneMatchVersion>9.0</luceneMatchVersion>
 
   <lib dir="${solr.install.dir:../../../..}/modules/extraction/lib" regex=".*\.jar" />
   <lib dir="${solr.install.dir:../../../..}/modules/clustering/lib/" regex=".*\.jar" />
@@ -92,6 +92,7 @@ things to add to managed-schema:
 
 //adding suggester field that will store all values 
   <field name="suggester" type="text_general" multiValued="true"/>
+  <field name="path" type="string"/>
 
 //in the end add copyField for global search
 

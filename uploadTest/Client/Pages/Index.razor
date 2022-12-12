@@ -10,8 +10,8 @@
 
 <!--Search input-->
 <MudAutocomplete T="string" Label="Search" @bind-Value="value" SearchFunc="@Search"
-                         ResetValueOnEmptyText="@resetValueOnEmptyText"
-                         CoerceText="@coerceText" CoerceValue="@coerceValue"
+                         ResetValueOnEmptyText="true"
+                         CoerceText="true" CoerceValue="true"
                          Variant="Variant.Outlined"
                          OnAdornmentClick="Query"
                          OnKeyPress="Enter"
@@ -22,21 +22,13 @@
 <TableView Files="indexFields" numberFounds="numberFounds" />
 
 @code {
-
-    private bool resetValueOnEmptyText;
-    private bool coerceText;
-    private bool coerceValue;
     private string value;
-
     private string q;
     public int numberFounds;
-    public double? Amount { get; set; }
-    public int? Weight { get; set; }
-    private bool Clearing = false;
     public List<IndexFields>? indexFields = null;
     public async void Query()
     {
-        if (value == String.Empty)
+        if (value == String.Empty || value == null)
         {
             q = "*:*";
         }
