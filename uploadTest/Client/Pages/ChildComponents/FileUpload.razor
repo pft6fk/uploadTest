@@ -3,6 +3,15 @@
 @using uploadTest.Shared
 @inject ISnackbar Snackbar
 @inject HttpClient Http
+@*
+<MudSelect @bind-Value="enumType" Label="Select upload options" OpenIcon="@Icons.Material.Filled.FileUpload" AdornmentColor="Color.Primary">
+    @foreach (UploadType item in Enum.GetValues(typeof(UploadType)))
+    {
+        <MudSelectItem Value="@item">@item</MudSelectItem>
+    }
+</MudSelect>
+<br />
+*@
 <MudPaper @ondragenter="@SetDragClass" @ondragleave="@ClearDragClass" @ondragend="@ClearDragClass" Height="300px" Outlined="true" Class="@DragClass">
     @if (!Clearing)
     {
@@ -21,15 +30,12 @@
 
 
 @code {
-    public double? Amount { get; set; }
-    public int? Weight { get; set; }
     private bool Clearing = false;
     private static string DefaultDragClass = "relative rounded-lg border-2 border-dashed pa-4 mt-4 mud-width-full mud-height-full";
     private string DragClass = DefaultDragClass;
     private List<string> fileNames = new List<string>();
-
-    //SaveFile saveFile = new SaveFile();
-
+    private UploadType enumType { get; set; } = UploadType.RichFile;
+    public enum UploadType { RichFile, Excel, CSV }
     private long maxFileSize = long.MaxValue;
     private List<UploadResult> uploadResults = new List<UploadResult>();
     private async Task OnInputFileChanged(InputFileChangeEventArgs e)
@@ -75,8 +81,6 @@
 
     private async Task Upload()
     {
-        //await Http.PostAsJsonAsync("api/FileUpload/saveFile", saveFile);
-        //Upload the files here
         Snackbar.Configuration.PositionClass = Defaults.Classes.Position.TopCenter;
         Snackbar.Add("Files has been uploaded successfully!", Severity.Normal);
         Clear();

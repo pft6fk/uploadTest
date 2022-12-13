@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using SolrNet.Commands.Parameters;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using SolrNet.Mapping;
 
 namespace uploadTest.Server.Controllers
 {
@@ -23,19 +24,20 @@ namespace uploadTest.Server.Controllers
             _solr = solr;
         }
 
-       /// <summary>
-       /// Sends Query to Solr Server
-       /// </summary>
-       /// <param name="q">Query</param>
-       /// <returns>List of IndexFields objects</returns>
+        /// <summary>
+        /// Sends Query to Solr Server
+        /// </summary>
+        /// <param name="q">Query</param>
+        /// <returns>List of IndexFields objects</returns>
         [HttpGet]
         [Route("Query/{q}")]
         public async Task<SolrQueryResults<IndexFields>> Query(string q)
         {
             var results = _solr.Query(new SolrQuery(q));
+            //A();
             return results;
         }
-        
+
         /// <summary>
         /// Uploads files to local "uploads" directory
         /// </summary>
@@ -61,7 +63,7 @@ namespace uploadTest.Server.Controllers
                 var path = Path.Combine(_env.ContentRootPath, "uploads", trustedFileNameForFileStorage);
                 await using FileStream fs = new FileStream(path, FileMode.Create);
                 await file.CopyToAsync(fs);
-                
+
                 fs.Dispose();
 
                 IndexFile(path, trustedFileNameForFileStorage);
@@ -111,7 +113,7 @@ namespace uploadTest.Server.Controllers
             var doc = RetrieveDataFromFile(path);
 
             var docContent = doc.Content;
-            List<Dictionary<string,string>> metaData = new List<Dictionary<string,string>>();
+            List<Dictionary<string, string>> metaData = new List<Dictionary<string, string>>();
             foreach (var item in doc.Metadata)
             {
                 var tmp = new Dictionary<string, string>();
@@ -153,7 +155,7 @@ namespace uploadTest.Server.Controllers
         {
             try
             {
-                System.IO.File.AppendAllText( _solrInstanceDir + _solrCore + "\\conf\\synonyms.txt", synonyms + Environment.NewLine);
+                System.IO.File.AppendAllText(_solrInstanceDir + _solrCore + "\\conf\\synonyms.txt", synonyms + Environment.NewLine);
                 //after adding updating synonyms, it is required to reload core
                 using (var client = new HttpClient())
                 {
@@ -171,7 +173,7 @@ namespace uploadTest.Server.Controllers
         {
             try
             {
-                System.IO.File.AppendAllText( _solrInstanceDir + _solrCore + "\\conf\\protwords.txt", protwords + Environment.NewLine);
+                System.IO.File.AppendAllText(_solrInstanceDir + _solrCore + "\\conf\\protwords.txt", protwords + Environment.NewLine);
                 //after adding updating synonyms, it is required to reload core
                 using (var client = new HttpClient())
                 {
@@ -189,7 +191,7 @@ namespace uploadTest.Server.Controllers
         {
             try
             {
-                System.IO.File.AppendAllText( _solrInstanceDir + _solrCore + "\\conf\\stopwords.txt", stopwords + Environment.NewLine);
+                System.IO.File.AppendAllText(_solrInstanceDir + _solrCore + "\\conf\\stopwords.txt", stopwords + Environment.NewLine);
                 //after adding updating synonyms, it is required to reload core
                 using (var client = new HttpClient())
                 {
@@ -231,7 +233,7 @@ namespace uploadTest.Server.Controllers
 
             using (var client = new HttpClient())
             {
-                 
+
                 var response = JObject.Parse(
                     await client.GetStringAsync(
                         _solrUri + $"/{_solrCore}/suggest?suggest=true&suggest.dictionary=FreeTextSuggester&suggest.q={term}"
@@ -245,7 +247,7 @@ namespace uploadTest.Server.Controllers
                 //for extracting unique words from collection
                 foreach (var item in terms.suggestions)
                 {
-                    
+
                     termsList.Add(item.term);
                 }
             }
@@ -262,7 +264,7 @@ namespace uploadTest.Server.Controllers
 
         //    using (var client = new HttpClient())
         //    {
-                 
+
         //        var response = JObject.Parse(
         //            await client.GetStringAsync(
         //                _solrUri + $"/{_solrCore}/suggest?suggest=true&suggest.dictionary=mySuggester&suggest.q={term}"
@@ -277,18 +279,32 @@ namespace uploadTest.Server.Controllers
         //        foreach (var item in terms.suggestions)
         //        {
         //            var tmp = item.term.Split(" ");
-                    
+
         //            var suggest = (from word in tmp
         //                    where word.StartsWith("<") select word).ToList<string>();
-                    
+
         //            if (termsList.Contains(suggest.FirstOrDefault()))
         //                continue;
-                    
+
         //            if(suggest.FirstOrDefault() != null)
         //                termsList.AddRange(suggest);
         //        }
         //    }
         //    return termsList;
+        //}
+
+        //public void A()
+        //{
+        //    var mgr = new MappingManager();
+        //    var iF = new IndexFields();
+        //    var q = new Dictionary<string, string>();
+        //    q.Add("abc", "abs");
+        //    mgr.Add(typeof(IndexFields).GetProperty("CSVData"), "abc");
+        //    iF.Id = Guid.NewGuid().ToString();
+        //    iF.CSVData = q;
+        //    _solr.Add(iF);
+        //    _solr.Commit();
+
         //}
     }
 }

@@ -49,19 +49,7 @@ namespace uploadTest.Shared
         
         [SolrField("docMetaData")]
         public List<Dictionary<string, string>> DocMetaData { get; set; }
-    }
-//created date
-//author
-//modified
-//language
-//data type = content type
-//size
-//pages
+        public Dictionary<string, string> CSVData { get; set; }
 
-
-    public class Search1
-    {
-        public string Text { get; set; } = "";
-        public string MyProperty { get; set; }
     }
 }
