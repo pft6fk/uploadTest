@@ -38,6 +38,7 @@
     public enum UploadType { RichFile, Excel, CSV }
     private long maxFileSize = long.MaxValue;
     private List<UploadResult> uploadResults = new List<UploadResult>();
+
     private async Task OnInputFileChanged(InputFileChangeEventArgs e)
     {
 
@@ -69,13 +70,11 @@
         }
     }
 
-    //to clear uploaded files
-    private async Task Clear()
+    private void Clear()
     {
         Clearing = true;
         fileNames.Clear();
         ClearDragClass();
-        await Task.Delay(100);
         Clearing = false;
     }
 

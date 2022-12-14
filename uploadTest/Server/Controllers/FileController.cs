@@ -34,7 +34,6 @@ namespace uploadTest.Server.Controllers
         public async Task<SolrQueryResults<IndexFields>> Query(string q)
         {
             var results = _solr.Query(new SolrQuery(q));
-            //A();
             return results;
         }
 
@@ -110,6 +109,7 @@ namespace uploadTest.Server.Controllers
         /// <param name="fileName">Name of file</param>
         public void IndexFile(string path, string fileName)
         {
+            //reading all data from file
             var doc = RetrieveDataFromFile(path);
 
             var docContent = doc.Content;
@@ -130,6 +130,10 @@ namespace uploadTest.Server.Controllers
             _solr.Commit();
         }
 
+        /// <summary>
+        /// Deletes document from solr and file system
+        /// </summary>
+        /// <param name="id"></param>
         [HttpGet]
         [Route("Delete/{id}")]
         public void Delete(string id)
@@ -149,6 +153,11 @@ namespace uploadTest.Server.Controllers
             _solr.Commit();
         }
 
+        /// <summary>
+        /// Adds sysnonyms to the solr core
+        /// </summary>
+        /// <param name="synonyms"></param>
+        /// <returns></returns>
         [HttpGet]
         [Route("AddSynonynms/{synonyms}")]
         public async Task AddSynonynms(string synonyms)
@@ -167,6 +176,12 @@ namespace uploadTest.Server.Controllers
                 Console.WriteLine(ex.Message);
             }
         }
+        
+        /// <summary>
+        /// Adds protwords to the solr core
+        /// </summary>
+        /// <param name="protwords"></param>
+        /// <returns></returns>
         [HttpGet]
         [Route("AddProtwords/{protwords}")]
         public async Task AddProtwords(string protwords)
@@ -185,6 +200,12 @@ namespace uploadTest.Server.Controllers
                 Console.WriteLine(ex.Message);
             }
         }
+        
+        /// <summary>
+        /// Adds stop words to the solr core
+        /// </summary>
+        /// <param name="stopwords"></param>
+        /// <returns></returns>
         [HttpGet]
         [Route("AddStopwords/{stopwords}")]
         public async Task AddStopwords(string stopwords)
@@ -204,13 +225,17 @@ namespace uploadTest.Server.Controllers
             }
         }
 
+        /// <summary>
+        /// Downloads file
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpGet]
         [Route("Download/{id}")]
         public async Task<IActionResult> DownloadFile(string id)
         {
             var solrDoc = _solr.Query(new SolrQuery(id));
             var path = solrDoc.Single().Path;
-            var docName = solrDoc.Single().DocName.Single();
             var docType = solrDoc.Single().DocDataType.Single();
             var memory = new MemoryStream();
 
@@ -223,6 +248,11 @@ namespace uploadTest.Server.Controllers
             return File(memory, docType, path);
         }
 
+        /// <summary>
+        /// FreeTextSuggester from solr
+        /// </summary>
+        /// <param name="term"></param>
+        /// <returns></returns>
         [HttpGet]
         [Route("Suggest/{term}")]
         public async Task<List<string>> Suggest(string term)
@@ -233,21 +263,20 @@ namespace uploadTest.Server.Controllers
 
             using (var client = new HttpClient())
             {
-
                 var response = JObject.Parse(
                     await client.GetStringAsync(
                         _solrUri + $"/{_solrCore}/suggest?suggest=true&suggest.dictionary=FreeTextSuggester&suggest.q={term}"
                         ));
-
+                //gets all values from suggest field
                 var suggestions = response["suggest"];
+                //gets response from Suggester
                 var LookupImpl = suggestions["FreeTextSuggester"];
+                //gets all suggested terms from Suggester
                 var LookupImplTerm = LookupImpl[term];
                 terms = JsonConvert.DeserializeObject<Suggest>(LookupImplTerm.ToString());
 
-                //for extracting unique words from collection
                 foreach (var item in terms.suggestions)
                 {
-
                     termsList.Add(item.term);
                 }
             }

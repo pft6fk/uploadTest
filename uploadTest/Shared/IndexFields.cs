@@ -12,12 +12,6 @@ namespace uploadTest.Shared
         [SolrUniqueKey("id")]
         public string Id { get; set; }
 
-        [SolrField("_nest_path_")]
-        public string NestPath { get; set; }
-        
-        [SolrField("_root_")]
-        public string Root { get; set; }
-
         [SolrField("docName")]
         public List<string> DocName { get; set; }
 
@@ -49,7 +43,6 @@ namespace uploadTest.Shared
         
         [SolrField("docMetaData")]
         public List<Dictionary<string, string>> DocMetaData { get; set; }
-        public Dictionary<string, string> CSVData { get; set; }
 
     }
 }
