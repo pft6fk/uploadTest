@@ -44,13 +44,17 @@
 
         using var content = new MultipartFormDataContent();
         ClearDragClass();
-
         var files = e.GetMultipleFiles();
+
         foreach (var file in files)
         {
             var fileContent = new StreamContent(file.OpenReadStream(maxFileSize));
-            fileContent.Headers.ContentType = new MediaTypeHeaderValue(file.ContentType);
-
+            Console.WriteLine(file.Name);
+            if (String.IsNullOrEmpty(file.ContentType))
+                fileContent.Headers.ContentType = new MediaTypeHeaderValue("text/plain");
+            
+            else
+                fileContent.Headers.ContentType = new MediaTypeHeaderValue(file.ContentType);
             fileNames.Add(file.Name);
 
             content.Add(
