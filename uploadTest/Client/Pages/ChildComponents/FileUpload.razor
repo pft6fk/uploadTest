@@ -49,7 +49,7 @@
         foreach (var file in files)
         {
             var fileContent = new StreamContent(file.OpenReadStream(maxFileSize));
-            Console.WriteLine(file.Name);
+
             if (String.IsNullOrEmpty(file.ContentType))
                 fileContent.Headers.ContentType = new MediaTypeHeaderValue("text/plain");
             
